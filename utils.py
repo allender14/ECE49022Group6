@@ -55,3 +55,57 @@ def visualize(
                 _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
   return image
+
+def adjust_camera_position(detection_result: processor.DetectionResult, width, height):
+    for detection in detection_result.detections:
+        # Draw bounding_box
+        bbox = detection.bounding_box
+        
+        # Get first bounding box from the detection list and extract the x and y coordinates
+        bbox_x_center = bbox.width / 2 + bbox.origin_x
+        bbox_y_center = bbox.height / 2 + bbox.origin_y
+        
+        # Get the center of the camera frame
+        frame_center_x = width / 2
+        frame_center_y = 2 * height / 3
+        
+        # Calculate the difference between teh center of the bounding box and the frame center
+        delta_x = bbox_x_center - frame_center_x
+        delta_y = bbox_y_center - frame_center_y
+        
+        # Definte movement threshold for how centered object should be
+        x_threshold = 20
+        y_threshold = 20
+        
+        # Intializie servo control commands
+        horizontal_command = 0
+        vertical_command = 0
+        
+        # Determine the x and y camera movements
+        if abs(delta_x) > x_threshold:
+            # Move the camera horizontally to center the object
+            horizontal_command = delta_x / width
+            if(horizontal_command > 0):
+                print('Move camera left')
+            else:
+                print('Move camera right')
+        else:
+            print('Object horizontally centered')
+        
+        if abs(delta_y) > y_threshold:
+            # Move the camera vertically to center the object
+            vertical_command = delta_y / height
+            if(vertical_command > 0):
+                print('Move camera down')
+            else:
+                print('Move camera up')
+        else:
+            print('Object vertically centered')        
+        
+        
+    return horizontal_command, vertical_command
+    
+    
+    
+    
+    

@@ -57,7 +57,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   base_options = core.BaseOptions(
       file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
   detection_options = processor.DetectionOptions(
-      max_results=3, score_threshold=0.3)
+      max_results=1, score_threshold=0.3, category_name_allowlist = ['person'])
   options = vision.ObjectDetectorOptions(
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
@@ -84,6 +84,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     # Draw keypoints and edges on input image
     image = utils.visualize(image, detection_result)
+    
+    # Evaluate object position in camera frame
+    horizontal_command, vertical_command = utils.adjust_camera_position(detection_result, width, height)
 
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
