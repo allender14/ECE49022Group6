@@ -1,38 +1,37 @@
-# TensorFlow Lite Python object detection example with Raspberry Pi
+# ECE 49022 - Group 6 Smart Tripod
 
-This example uses [TensorFlow Lite](https://tensorflow.org/lite) with Python on
+This repository was derived from Tensor Flow Lite's Raspberry Pi sample code found at 
+[Tensor Flow Pi example](https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/raspberry_pi).
+This repository uses [TensorFlow Lite](https://tensorflow.org/lite) with Python on
 a Raspberry Pi to perform real-time object detection using images streamed from
-the Pi Camera. It draws a bounding box around each detected object in the camera
-preview (when the object score is above a given threshold).
+a USB webcam. It draws a bounding box around one person detected in the camera at a time.
 
-At the end of this page, there are extra steps to accelerate the example using
-the Coral USB Accelerator to increase inference speed.
+Once a person is detected within the camera frame, instructions our output to center the person 
+within the frame. Once centered, a second detections model will take over utilizing () that will 
+look for a person's closed fist. Once this gesture is detected, it will start a countdown timer
+that will then take a photo of a user. If a photo is taken, or if the gesture detection model 
+times out, it will switch back to the object detections model to continue detecting a person 
+within the frame.
 
-## Set up your hardware
+## Setting up the Hardware
 
-Before you begin, you need to
+Before you begin, you must
 [set up your Raspberry Pi](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up)
 with Raspberry Pi OS (preferably updated to Buster).
+For our implementation, we utilized a Raspberry Pi v4 B - 8gb. 
 
-You also need to
+You may also need to
 [connect and configure the Pi Camera](https://www.raspberrypi.org/documentation/configuration/camera.md)
 if you use the Pi Camera. This code also works with USB camera connect to the
 Raspberry Pi.
+For our implementation, we just used a USB webcam that was plugged directly into the Pi.
 
-And to see the results from the camera, you need a monitor connected to the
-Raspberry Pi. It's okay if you're using SSH to access the Pi shell (you don't
-need to use a keyboard connected to the Pi)—you only need a monitor attached to
-the Pi to see the camera stream.
+## Running the code
 
-## Download the example files
+First, clone this Git repo onto your Raspberry Pi.
 
-First, clone this Git repo onto your Raspberry Pi like this:
-
-```
-git clone https://github.com/tensorflow/examples --depth 1
-```
-
-Then use our script to install a couple Python packages, and download the
+It is recommended to setup a python virtual environment.
+Then use the script to install a couple Python packages, and download the
 EfficientDet-Lite model:
 
 ```
@@ -41,6 +40,10 @@ cd examples/lite/examples/object_detection/raspberry_pi
 # The script install the required dependencies and download the TFLite models.
 sh setup.sh
 ```
+
+We initially had issues getting the model running because the neweer versions of 
+[]() were no compatible. We had to downgrade the version to __ in order to get the 
+object detection model to work. 
 
 In this project, all you need from the TensorFlow Lite API is the `Interpreter`
 class. So instead of installing the large `tensorflow` package, we're using the
@@ -53,44 +56,3 @@ the TensorFlow Lite runtime.
 python3 detect.py \
   --model efficientdet_lite0.tflite
 ```
-
-You should see the camera feed appear on the monitor attached to your Raspberry
-Pi. Put some objects in front of the camera, like a coffee mug or keyboard, and
-you'll see boxes drawn around those that the model recognizes, including the
-label and score for each. It also prints the number of frames per second (FPS)
-at the top-left corner of the screen. As the pipeline contains some processes
-other than model inference, including visualizing the detection results, you can
-expect a higher FPS if your inference pipeline runs in headless mode without
-visualization.
-
-For more information about executing inferences with TensorFlow Lite, read
-[TensorFlow Lite inference](https://www.tensorflow.org/lite/guide/inference).
-
-## Speed up model inference (optional)
-
-If you want to significantly speed up the inference time, you can attach an
-[Coral USB Accelerator](https://coral.withgoogle.com/products/accelerator)—a USB
-accessory that adds the
-[Edge TPU ML accelerator](https://coral.withgoogle.com/docs/edgetpu/faq/) to any
-Linux-based system.
-
-If you have a Coral USB Accelerator, you can run the sample with it enabled:
-
-1.  First, be sure you have completed the
-    [USB Accelerator setup instructions](https://coral.withgoogle.com/docs/accelerator/get-started/).
-
-2.  Run the object detection script using the EdgeTPU TFLite model and enable
-    the EdgeTPU option. Be noted that the EdgeTPU requires a specific TFLite
-    model that is different from the one used above.
-
-```
-python3 detect.py \
-  --enableEdgeTPU
-  --model efficientdet_lite0_edgetpu.tflite
-```
-
-You should see significantly faster inference speeds.
-
-For more information about creating and running TensorFlow Lite models with
-Coral devices, read
-[TensorFlow models on the Edge TPU](https://coral.withgoogle.com/docs/edgetpu/models-intro/).
