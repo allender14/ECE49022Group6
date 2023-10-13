@@ -21,6 +21,7 @@ from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
+import subprocess
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -38,7 +39,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
   # Variables to calculate FPS
   counter, fps = 0, 0
-  start_time = time.time()
+  start_time = 0
+  start_timer = 0
+  timer_started = 0
 
   # Start capturing video input from the camera
   cap = cv2.VideoCapture(camera_id)
@@ -89,17 +92,21 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     horizontal_command, vertical_command = utils.adjust_camera_position(detection_result, width, height)
     
     # Check to see if the detected object has beeen centered and if so, start a timer
-    if (horizontal_command || vertical_command) == 0:
-      start_time = time.time()
+    if ((horizontal_command or vertical_command) == 0 and (timer_started == 0)) :
+      start_timer = time.time()
+      print("Timer started")
       timer_started = 1
-    elif !(horizontal_command || vertical_command) and (timer_started == 1):
-      start_time = none
+    elif not((horizontal_command or vertical_command) == 0) and (timer_started == 1):
+      start_timer = 0
       timer_started = 0
       
     # If the object has been centered for 3 seconds or more, run the gesture detection code
-    if start_time and time.time() - start_time >= 3:
+    if start_timer and time.time() - start_timer >= 3:
       ######
       # Call Gesture detection here
+      print("gesture")
+      subprocess.run(["python3", "./src/gesture_recognition.py"])
+      start_timer = 0
       ######
 
     # Calculate the FPS

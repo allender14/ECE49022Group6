@@ -57,6 +57,10 @@ def visualize(
   return image
 
 def adjust_camera_position(detection_result: processor.DetectionResult, width, height):
+     # Intializie servo control commands
+    horizontal_command = 0
+    vertical_command = 0
+        
     for detection in detection_result.detections:
         # Draw bounding_box
         bbox = detection.bounding_box
@@ -74,33 +78,29 @@ def adjust_camera_position(detection_result: processor.DetectionResult, width, h
         delta_y = bbox_y_center - frame_center_y
         
         # Definte movement threshold for how centered object should be
-        x_threshold = 20
+        x_threshold = 50
         y_threshold = 20
-        
-        # Intializie servo control commands
-        horizontal_command = 0
-        vertical_command = 0
         
         # Determine the x and y camera movements
         if abs(delta_x) > x_threshold:
             # Move the camera horizontally to center the object
             horizontal_command = delta_x / width
-            if(horizontal_command > 0):
-                print('Move camera left')
-            else:
-                print('Move camera right')
-        else:
-            print('Object horizontally centered')
+            #if(horizontal_command > 0):
+                #print('Move camera left')
+            #else:
+                #print('Move camera right')
+        #else:
+            #print('Object horizontally centered')
         
         if abs(delta_y) > y_threshold:
             # Move the camera vertically to center the object
             vertical_command = delta_y / height
-            if(vertical_command > 0):
-                print('Move camera down')
-            else:
-                print('Move camera up')
-        else:
-            print('Object vertically centered')        
+            #if(vertical_command > 0):
+                #print('Move camera down')
+            #else:
+                #print('Move camera up')
+        #else:
+            #print('Object vertically centered')        
         
         
     return horizontal_command, vertical_command
