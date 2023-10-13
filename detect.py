@@ -87,6 +87,20 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     
     # Evaluate object position in camera frame
     horizontal_command, vertical_command = utils.adjust_camera_position(detection_result, width, height)
+    
+    # Check to see if the detected object has beeen centered and if so, start a timer
+    if (horizontal_command || vertical_command) == 0:
+      start_time = time.time()
+      timer_started = 1
+    elif !(horizontal_command || vertical_command) and (timer_started == 1):
+      start_time = none
+      timer_started = 0
+      
+    # If the object has been centered for 3 seconds or more, run the gesture detection code
+    if start_time and time.time() - start_time >= 3:
+      ######
+      # Call Gesture detection here
+      ######
 
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
