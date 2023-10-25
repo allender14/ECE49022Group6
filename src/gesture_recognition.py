@@ -151,6 +151,7 @@ def run(model: str, num_hands: int,
           flag1 = False
           flag2 = False
           flag3 = False
+          break
 
     if recognition_frame is not None:
         cv2.imshow('gesture_recognition', recognition_frame)

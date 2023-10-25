@@ -89,10 +89,10 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     # Draw keypoints and edges on input image
     image = utils.visualize(image, detection_result)
-    
+
     # Evaluate object position in camera frame
     horizontal_command, vertical_command = utils.adjust_camera_position(detection_result, width, height)
-    
+
     # Check to see if the detected object has beeen centered and if so, start a timer
     if ((horizontal_command or vertical_command) == 0 and (timer_started == 0)) :
       start_timer = time.time()
@@ -101,13 +101,14 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     elif not((horizontal_command or vertical_command) == 0) and (timer_started == 1):
       start_timer = 0
       timer_started = 0
-      
+
     # If the object has been centered for 3 seconds or more, run the gesture detection code
     if start_timer and time.time() - start_timer >= 3:
       ######
       # Call Gesture detection here
       print("gesture")
-      subprocess.run(["python3", "./src/gesture_recognition.py"])
+      cv2.destroyAllWindows()
+      subprocess.run(["python", "./src/gesture_recognition.py"])
       start_timer = 0
       ######
 
