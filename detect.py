@@ -43,6 +43,8 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   start_timer = 0
   timer_started = 0
 
+  #test
+
   # Start capturing video input from the camera
   cap = cv2.VideoCapture(camera_id)
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
