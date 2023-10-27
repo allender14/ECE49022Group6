@@ -59,6 +59,22 @@ class. So instead of installing the large `tensorflow` package, we're using the
 much smaller `tflite_runtime` package. The setup scripts automatically install
 the TensorFlow Lite runtime.
 
+After that, you need to install `mediapipe`
+
+```
+pip install mediapipe
+```
+However, this will install `opencv-contrib-python`. So, you need to uninstall 
+
+```
+pip uninstall opencv-contrib-python opencv-python
+```
+and reinstall `opencv-contrib-python`
+
+```
+pip install opencv-contrib-python
+```
+
 ## Run the example
 
 ```
