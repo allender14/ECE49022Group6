@@ -7,11 +7,13 @@ a Raspberry Pi to perform real-time object detection using images streamed from
 a USB webcam. It draws a bounding box around one person detected in the camera at a time.
 
 Once a person is detected within the camera frame, instructions our output to center the person 
-within the frame. Once centered, a second detections model will take over utilizing () that will 
-look for a person's closed fist. Once this gesture is detected, it will start a countdown timer
-that will then take a photo of a user. If a photo is taken, or if the gesture detection model 
-times out, it will switch back to the object detections model to continue detecting a person 
-within the frame.
+within the frame. These instructions are computed by taking the difference between the position of
+the box and the center of the camera frame. Once centered, a second detections model will take over 
+utilizing [MediaPipe Gesture Recognition](https://github.com/googlesamples/mediapipe/tree/main.) 
+that will look for a person's closed fist. Once this gesture is detected, it will 
+start a countdown timer that will then take a photo of a user. If a photo is taken, or if the 
+gesture detection model times out, it will switch back to the object detections model to continue 
+detecting a person within the frame.
 
 ## Setting up the Hardware
 
@@ -42,8 +44,14 @@ sh setup.sh
 ```
 
 We initially had issues getting the model running because the neweer versions of 
-[]() were no compatible. We had to downgrade the version to __ in order to get the 
-object detection model to work. 
+[tflite-support](https://forums.raspberrypi.com/viewtopic.php?t=353534) were not compatible.
+We had to downgrade the version to 0.4.3 in order to get the 
+object detection model to work. You can do this by running:
+
+'''
+python -m pip install --upgrade tflite-support==0.4.3
+'''
+
 
 In this project, all you need from the TensorFlow Lite API is the `Interpreter`
 class. So instead of installing the large `tensorflow` package, we're using the
