@@ -61,12 +61,14 @@ def run(model: str, num_hands: int,
   recognizer = vision.GestureRecognizer.create_from_options(options)
 
   flag = False
+  check_time = time.time()
   start_time = 0
   count_time = 0
   detected = False
   flag1 = False
   flag2 = False
   flag3 = False
+  gesture_flag = False
 
   while cap.isOpened():
     success, image = cap.read()
@@ -106,14 +108,23 @@ def run(model: str, num_hands: int,
             if (category_name == "Closed_Fist"):
               #cnt += 1
               if (flag == False and detected == False):
+                check_time = time.time()
                 start_time = time.time()
                 flag = True
-
+            else:
+              flag = False
+              start_time = 0
+            
+            
             if (((time.time() - start_time) >= 3) and (flag == True)):
               print("Detected for 3 seconds, count down starts")
-              detected = True
               count_time = time.time()
+              detected = True
               flag = False
+              
+      if (((time.time() - check_time) >= 20) and (flag == False)):
+        print("Not detected for 20 seconds")
+        break
 
         text_size = \
         cv2.getTextSize(result_text, cv2.FONT_HERSHEY_DUPLEX, label_font_size,
