@@ -48,9 +48,9 @@ We initially had issues getting the model running because the neweer versions of
 We had to downgrade the version to 0.4.3 in order to get the 
 object detection model to work. You can do this by running:
 
-'''
+```
 python -m pip install --upgrade tflite-support==0.4.3
-'''
+```
 
 
 In this project, all you need from the TensorFlow Lite API is the `Interpreter`
