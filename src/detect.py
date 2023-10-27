@@ -107,8 +107,10 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       ######
       # Call Gesture detection here
       print("gesture")
+      cap.release()
       cv2.destroyAllWindows()
-      subprocess.run(["python", "./src/gesture_recognition.py"])
+      subprocess.run(["python", "gesture_recognition.py"])
+      cap = cv2.VideoCapture(camera_id)
       start_timer = 0
       ######
 

@@ -15,8 +15,11 @@ while cap.isOpened():
         break
 
     if (time.time() - start_time) > 5:
-        cv2.destroyAllWindows()
-        subprocess.run(["python", "./src/gesture_recognition.py"])
+        cap.release()
+       	cv2.destroyAllWindows()
+        subprocess.run(["python", "./gesture_recognition.py"])
+        print("hello")
+        cap = cv2.VideoCapture(0)
         start_time = time.time()
 
     cv2.imshow("window1", frame)
