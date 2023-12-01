@@ -3,6 +3,8 @@ import sys
 import time
 import datetime
 
+from gpiozero import LED
+
 import cv2
 import mediapipe as mp
 
@@ -10,6 +12,8 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import BaseOptions, vision
 from mediapipe.framework.formats import landmark_pb2
 
+led_yellow = LED(6)
+led_green = LED(13)
 COUNTER, FPS = 0, 0
 START_TIME = time.time()
 
@@ -69,6 +73,8 @@ def run(model: str, num_hands: int,
   flag2 = False
   flag3 = False
   gesture_flag = False
+  
+  led_green.on()
 
   while cap.isOpened():
     success, image = cap.read()
@@ -116,8 +122,8 @@ def run(model: str, num_hands: int,
               start_time = 0
             
             
-            if (((time.time() - start_time) >= 3) and (flag == True)):
-              print("Detected for 3 seconds, count down starts")
+            if (((time.time() - start_time) >= 2) and (flag == True)):
+              print("Detected for 2 seconds, count down starts")
               count_time = time.time()
               detected = True
               flag = False
@@ -144,14 +150,23 @@ def run(model: str, num_hands: int,
 
       if (detected):
         if (((time.time() - count_time) >= 1) and flag1 == False):
+          led_yellow.on()
           print(3)
           flag1 = True
+          time.sleep(0.5)
+          led_yellow.off()
         if (((time.time() - count_time) >= 2) and flag2 == False):
+          led_yellow.on()
           print(2)
           flag2 = True
+          time.sleep(0.5)
+          led_yellow.off()
         if (((time.time() - count_time) >= 3) and flag3 == False):
+          led_yellow.on()
           print(1)
           flag3 = True
+          time.sleep(0.5)
+          led_yellow.off()
         if ((time.time() - count_time) >= 4):
           print("Captured")
           current_time = datetime.datetime.now()
@@ -162,6 +177,7 @@ def run(model: str, num_hands: int,
           flag1 = False
           flag2 = False
           flag3 = False
+          led_green.off()
           break
 
     if recognition_frame is not None:
@@ -181,7 +197,7 @@ def main():
       '--model',
       help='Name of gesture recognition model.',
       required=False,
-      default='../model/gesture_recognizer.task')
+      default='/home/eceteam6/Documents/ECE49022Group6/model/gesture_recognizer.task')
   parser.add_argument(
       '--numHands',
       help='Max number of hands that can be detected by the recognizer.',

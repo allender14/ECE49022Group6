@@ -16,12 +16,16 @@ import argparse
 import sys
 import time
 
+from gpiozero import LED
+
 import cv2
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
 import subprocess
+
+led = LED(5)
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -68,6 +72,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   detector = vision.ObjectDetector.create_from_options(options)
 
   # Continuously capture images from the camera and run inference
+  led.on()
   while cap.isOpened():
     success, image = cap.read()
     if not success:
@@ -109,7 +114,9 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       print("gesture")
       cap.release()
       cv2.destroyAllWindows()
-      subprocess.run(["python", "gesture_recognition.py"])
+      led.off()
+      subprocess.run(["python", "/home/eceteam6/Documents/ECE49022Group6/src/gesture_recognition.py"])
+      led.on()
       cap = cv2.VideoCapture(camera_id)
       start_timer = 0
       ######
@@ -142,7 +149,7 @@ def main():
       '--model',
       help='Path of the object detection model.',
       required=False,
-      default='efficientdet_lite0.tflite')
+      default='/home/eceteam6/Documents/ECE49022Group6/src/efficientdet_lite0.tflite')
   parser.add_argument(
       '--cameraId', help='Id of camera.', required=False, type=int, default=0)
   parser.add_argument(
